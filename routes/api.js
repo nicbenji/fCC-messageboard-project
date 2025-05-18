@@ -3,21 +3,21 @@
 module.exports = function(app) {
 
     app.route('/api/threads/:board')
-        .post((err, res) => {
+        .post((req, res) => {
         })
-        .get((err, res) => {
+        .get((req, res) => {
         })
-        .delete((err, res) => {
+        .delete((req, res) => {
         });
 
     app.route('/api/replies/:board')
-        .put((err, res) => {
+        .put((req, res) => {
         })
-        .post((err, res) => {
+        .post((req, res) => {
         })
-        .get((err, res) => {
+        .get((req, res) => {
         })
-        .delete((err, res) => {
+        .delete((req, res) => {
         });
 
 };
