@@ -22,6 +22,9 @@ app.use(helmet({
             scriptSrc: ["'self'"],
             styleSrc: ["'self'"]
         }
+    },
+    referrerPolicy: {
+        policy: 'same-origin'
     }
 }));
 
