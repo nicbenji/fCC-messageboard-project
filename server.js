@@ -18,8 +18,8 @@ app.use(helmet({
     frameguard: { actions: 'deny' },
     contentSecurityPolicy: {
         directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: ["'self'"],
+            defaultSrc: ["'self'", 'https://cdn.freecodecamp.org'],
+            scriptSrc: ["'self'", 'https://code.jquery.com/jquery-2.2.1.min.js'],
             styleSrc: ["'self'"]
         }
     },

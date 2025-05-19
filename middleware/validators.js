@@ -14,14 +14,6 @@ function validatePassword(req, res, next) {
     next();
 }
 
-function validateBoard(req, res, next) {
-    const { board } = req.body;
-    if (!board || board.trim() === '') {
-        return res.status(400).json({ error: 'Board name needs to be specified' });
-    }
-    next();
-}
-
 function validateText(req, res, next) {
     const { text } = req.body;
     if (!text || text.trim() === '') {
@@ -30,30 +22,22 @@ function validateText(req, res, next) {
     next();
 }
 
-function validateThreadId(req, res, next) {
-    const { thread_id: threadId } = req.body;
-    if (!threadId) {
-        return res.status(400).json({ error: 'Missing thread id. Id consists of 24 hex chars.' });
+function validateId({ in: location = 'body', fieldName }) {
+    return (req, res, next) => {
+        const paramSource = req[location] || {};
+        const id = paramSource[fieldName];
+
+        if (!threadId) {
+            return res.status(400).json({ error: 'Missing thread id. Id consists of 24 hex chars.' });
+        }
+        if (!mongoose.isValidObjectId(threadId)) {
+            return res.status(400).json({ error: 'Invalid thread id. Id consists of 24 hex chars.' });
+        }
+        next();
     }
-    if (mongoose.isValidObjectId(threadId)) {
-        return res.status(400).json({ error: 'Invalid thread id. Id consists of 24 hex chars.' });
-    }
-    next();
 }
 
-function validateReplyId(req, res, next) {
-    const { reply: replyId } = req.body;
-    if (!replyId) {
-        return res.status(400).json({ error: 'Missing reply id. Id consists of 24 hex chars.' });
-    }
-    if (mongoose.isValidObjectId(replyId)) {
-        return res.status(400).json({ error: 'Invalid reply id. Id consists of 24 hex chars.' });
-    }
-    next();
-}
 
 exports.validatePassword = validatePassword;
-exports.validateBoard = validateBoard;
 exports.validateText = validateText;
-exports.validateThreadId = validateThreadId;
-exports.validateReplyId = validateReplyId;
+exports.validateId = validateId;
