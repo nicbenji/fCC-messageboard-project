@@ -1,19 +1,12 @@
 'use strict';
 
-const validatePassord = require("../middleware/validatePassord");
+const { validatePassword, validateBoard, validateText } = require("../middleware/validators");
 
 module.exports = function(app) {
 
     app.route('/api/threads/:board')
-        .post(validatePassord, (req, res) => {
+        .post([validateBoard, validateText, validatePassword], (req, res) => {
             const { board, text, delete_password: deletePassword } = req.body;
-
-            if (!board) {
-                res.status(400).json({ error: 'Board name needs to be specified' });
-            }
-            if (!text || text.trim() === '') {
-                res.status(400).json({ error: 'Thread needs to have text' });
-            }
         })
         .get((req, res) => {
         })
