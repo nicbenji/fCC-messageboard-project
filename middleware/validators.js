@@ -28,10 +28,10 @@ function validateId({ in: location = 'body', fieldName }) {
         const id = paramSource[fieldName];
 
         if (!id) {
-            return res.status(400).json({ error: 'Missing thread id. Id consists of 24 hex chars.' });
+            return res.status(400).json({ error: `Missing ${fieldName}. Id consists of 24 hex chars.` });
         }
         if (!mongoose.isValidObjectId(id)) {
-            return res.status(400).json({ error: 'Invalid thread id. Id consists of 24 hex chars.' });
+            return res.status(400).json({ error: `Invalid ${fieldName}. Id consists of 24 hex chars.` });
         }
         next();
     }
