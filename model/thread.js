@@ -18,7 +18,10 @@ const threadSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    replies: [replySchema],
+    replies: {
+        type: [replySchema],
+        default: []
+    }
 }, {
     timestamps: {
         createdAt: 'created_on',

@@ -7,12 +7,12 @@ const replyController = require('../controllers/replyController');
 module.exports = function(app) {
 
     app.route('/api/threads/:board')
-        .post([validateText, validatePassword], (req, res) => {
+        .post([validateText, validatePassword], async (req, res) => {
             const board = req.params.board;
             const { text, delete_password: deletePassword } = req.body;
 
             try {
-                const thread = threadController
+                const thread = await threadController
                     .createThread(board, text, deletePassword);
                 return res.status(200).json(thread);
             } catch (error) {
@@ -20,23 +20,23 @@ module.exports = function(app) {
                 return res.status(500).json({ error: error.message });
             }
         })
-        .get((req, res) => {
+        .get(async (req, res) => {
             const board = req.params.board;
 
             try {
-                const boardOverview = threadController.getRecentThreads(board);
+                const boardOverview = await threadController.getRecentThreads(board);
                 return res.status(200).json(boardOverview);
             } catch (error) {
                 console.error(error);
                 return res.status(500).json({ error: error.message });
             }
         })
-        .put(validateId({ in: 'body', fieldName: 'thread_id' }), (req, res) => {
+        .put(validateId({ in: 'body', fieldName: 'thread_id' }), async (req, res) => {
             const board = req.params.board;
             const { thread_id: threadId } = req.query;
 
             try {
-                const reported = threadController.reportThread(board, threadId);
+                const reported = await threadController.reportThread(board, threadId);
                 return res.status(200).json(reported);
             } catch (error) {
                 console.error(error);
@@ -45,7 +45,7 @@ module.exports = function(app) {
         })
         .delete(
             validateId({ in: 'body', fieldName: 'thread_id' }),
-            (req, res) => {
+            async (req, res) => {
                 const board = req.params.board;
                 const {
                     delete_password: deletePassword,
@@ -53,7 +53,7 @@ module.exports = function(app) {
                 } = req.body;
 
                 try {
-                    const result = threadController
+                    const result = await threadController
                         .deleteThread(board, deletePassword, threadId);
                     return res.status(200).json(result);
                 } catch (error) {
@@ -66,7 +66,7 @@ module.exports = function(app) {
         .post([
             validateId({ in: 'body', fieldName: 'thread_id' }),
             validatePassword
-        ], (req, res) => {
+        ], async (req, res) => {
             const board = req.params.board;
             const {
                 text,
@@ -75,7 +75,7 @@ module.exports = function(app) {
             } = req.body;
 
             try {
-                const threadWithReply = replyController
+                const threadWithReply = await replyController
                     .createReply(board, text, deletePassword, threadId);
                 return res.status(200).json(threadWithReply);
             } catch (error) {
@@ -85,12 +85,12 @@ module.exports = function(app) {
         })
         .get(
             validateId({ in: 'query', fieldName: 'thread_id' }),
-            (req, res) => {
+            async (req, res) => {
                 const board = req.params.board;
                 const { thread_id: threadId } = req.query;
 
                 try {
-                    const threadWithReplies = replyController
+                    const threadWithReplies = await replyController
                         .getThreadWithReplies(board, threadId);
                     return res.status(200).json(threadWithReplies);
                 } catch (error) {
@@ -98,12 +98,12 @@ module.exports = function(app) {
                     return res.status(500).json({ error: error.message });
                 }
             })
-        .put(validateId({ in: 'body', fieldName: 'reply_id' }), (req, res) => {
+        .put(validateId({ in: 'body', fieldName: 'reply_id' }), async (req, res) => {
             const board = req.params.board;
             const { reply_id: replyId } = req.query;
 
             try {
-                const reported = replyController.reportReply(board, replyId);
+                const reported = await replyController.reportReply(board, replyId);
                 return res.status(200).json(reported);
             } catch (error) {
                 console.error(error);
@@ -115,7 +115,7 @@ module.exports = function(app) {
                 validateId({ in: 'body', fieldName: 'thread_id' }),
                 validateId({ in: 'body', fieldName: 'reply_id' })
             ],
-            (req, res) => {
+            async (req, res) => {
                 const board = req.params.board;
                 const {
                     delete_password: deletePassword,
@@ -124,7 +124,7 @@ module.exports = function(app) {
                 } = req.body;
 
                 try {
-                    const result = replyController
+                    const result = await replyController
                         .deleteReply(board, deletePassword, threadId, replyId);
                     return res.status(200).json(result);
                 } catch (error) {

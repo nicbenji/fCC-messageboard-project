@@ -1,5 +1,16 @@
-function createThread(board, text, deletePassword) {
-    return null;
+const Thread = require("../model/thread");
+const { hashPassword } = require("./hashPassword");
+
+async function createThread(board, text, deletePassword) {
+    const passwordHash = await hashPassword(deletePassword);
+
+    const newThread = new Thread({
+        board,
+        text,
+        delete_password: passwordHash
+    });
+
+    return await newThread.save();
 }
 
 function getRecentThreads(board) {
