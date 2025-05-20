@@ -5,12 +5,20 @@ async function createThread(board, text, deletePassword) {
     const passwordHash = await hashPassword(deletePassword);
 
     const newThread = new Thread({
-        board,
+        boardName: board,
         text,
         delete_password: passwordHash
     });
 
-    return await newThread.save();
+    const result = await newThread.save();
+
+    return {
+        _id: result._id,
+        text: result.text,
+        replies: result.replies,
+        bumped_on: result.bumped_on,
+        created_on: result.created_on
+    }
 }
 
 function getRecentThreads(board) {

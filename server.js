@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const apiRoutes = require('./routes/api.js');
 const fccTestingRoutes = require('./routes/fcctesting.js');
 const runner = require('./test-runner');
+const database = require('./dbconnect.js')
 
 const app = express();
 
@@ -61,8 +62,13 @@ app.use(function(req, res, next) {
 });
 
 //Start our server and tests!
-const listener = app.listen(process.env.PORT || 3000, function() {
+const listener = app.listen(process.env.PORT || 3000, async function() {
     console.log('Your app is listening on port ' + listener.address().port);
+    try {
+        await database();
+    } catch (error) {
+        console.error(error);
+    }
     if (process.env.NODE_ENV === 'test') {
         console.log('Running Tests...');
         setTimeout(function() {
