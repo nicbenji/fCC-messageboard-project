@@ -21,15 +21,15 @@ async function createThread(board, text, deletePassword) {
     }
 }
 
-function getRecentThreads(board) {
+async function getRecentThreads(board) {
     return null;
 }
 
-function reportThread(board, threadId) {
+async function reportThread(board, threadId) {
     return null;
 }
 
-function deleteThread(board, deletePassword, threadId) {
+async function deleteThread(board, deletePassword, threadId) {
     return null;
 }
 
