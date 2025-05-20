@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { replySchema } = require('./reply');
+const replySchema = require('./reply');
 
 const threadSchema = new mongoose.Schema({
     boardName: {

@@ -20,7 +20,4 @@ const replySchema = new mongoose.Schema({
     }
 });
 
-const Reply = new mongoose.model('Reply', replySchema);
-
-module.exports = Reply;
-exports.replySchema = replySchema;
+module.exports = replySchema;
