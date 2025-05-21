@@ -92,6 +92,9 @@ module.exports = function(app) {
                 try {
                     const threadWithReplies = await replyController
                         .getThreadWithReplies(board, threadId);
+                    if (!threadWithReplies) {
+                        return res.status(404).json({ error: 'No thread found with id ' + threadId });
+                    }
                     return res.status(200).json(threadWithReplies);
                 } catch (error) {
                     console.error(error);

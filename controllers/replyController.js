@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const Thread = require("../model/thread");
 const { hashPassword } = require("./hashPassword");
 
@@ -29,7 +31,35 @@ async function createReply(board, text, deletePassword, threadId) {
 }
 
 async function getThreadWithReplies(board, threadId) {
-    return null;
+    const threadWithReplies = await Thread.aggregate([
+        {
+            $match: {
+                boardName: board,
+                _id: new mongoose.Types.ObjectId(threadId)
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                text: 1,
+                created_on: 1,
+                bumped_on: 1,
+                replies: {
+                    $map: {
+                        input: '$replies',
+                        as: 'reply',
+                        in: {
+                            _id: '$$reply._id',
+                            text: '$$reply.text',
+                            created_on: '$$reply.created_on'
+                        }
+                    }
+                }
+            }
+        }
+    ]);
+
+    return threadWithReplies[0];
 }
 
 async function reportReply(board, replyId) {
