@@ -37,7 +37,7 @@ module.exports = function(app) {
 
             try {
                 const reported = await threadController.reportThread(board, threadId);
-                return res.status(200).json(reported);
+                return res.status(200).send(reported);
             } catch (error) {
                 console.error(error);
                 return res.status(500).json({ error: error.message });
@@ -55,7 +55,7 @@ module.exports = function(app) {
                 try {
                     const result = await threadController
                         .deleteThread(board, deletePassword, threadId);
-                    return res.status(200).json(result);
+                    return res.status(200).send(result);
                 } catch (error) {
                     console.error(error);
                     return res.status(500).json({ error: error.message });
@@ -107,7 +107,7 @@ module.exports = function(app) {
 
             try {
                 const reported = await replyController.reportReply(board, replyId);
-                return res.status(200).json(reported);
+                return res.status(200).send(reported);
             } catch (error) {
                 console.error(error);
                 return res.status(500).json({ error: error.message });
@@ -129,7 +129,7 @@ module.exports = function(app) {
                 try {
                     const result = await replyController
                         .deleteReply(board, deletePassword, threadId, replyId);
-                    return res.status(200).json(result);
+                    return res.status(200).send(result);
                 } catch (error) {
                     console.error(error);
                     return res.status(500).json({ error: error.message });

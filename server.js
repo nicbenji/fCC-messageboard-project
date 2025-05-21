@@ -20,8 +20,8 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'", 'https://cdn.freecodecamp.org'],
-            scriptSrc: ["'self'", 'https://code.jquery.com/jquery-2.2.1.min.js'],
-            styleSrc: ["'self'"]
+            scriptSrc: ["'self'", 'https://code.jquery.com/jquery-2.2.1.min.js', "'unsafe-inline'"],
+            styleSrc: ["'self'", "'unsafe-inline'"]
         }
     },
     referrerPolicy: {

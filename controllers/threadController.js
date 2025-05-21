@@ -1,5 +1,5 @@
 const Thread = require("../model/thread");
-const { hashPassword } = require("./hashPassword");
+const { hashPassword, comparePassword } = require("./hashPassword");
 
 async function createThread(board, text, deletePassword) {
     const passwordHash = await hashPassword(deletePassword);
@@ -56,7 +56,22 @@ async function reportThread(board, threadId) {
 }
 
 async function deleteThread(board, deletePassword, threadId) {
-    return null;
+
+    const thread = await Thread
+        .findOne({ _id: threadId, boardName: board })
+        .lean();
+    if (!thread) {
+        throw new Error(`No thread with ${threadId} found in board ${board}`);
+    }
+
+    const passwordHash = thread.delete_password;
+    const isCorrectPassword = await comparePassword(deletePassword, passwordHash);
+    if (!isCorrectPassword) {
+        return 'incorrect password';
+    }
+
+    const result = await Thread.deleteOne({ _id: threadId, boardName: board });
+    return 'success';
 }
 
 exports.createThread = createThread;
