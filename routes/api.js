@@ -33,11 +33,14 @@ module.exports = function(app) {
         })
         .put(validateId({ in: 'body', fieldName: 'thread_id' }), async (req, res) => {
             const board = req.params.board;
-            const { thread_id: threadId } = req.query;
+            const { thread_id: threadId } = req.body;
 
             try {
-                const reported = await threadController.reportThread(board, threadId);
-                return res.status(200).send(reported);
+                const thread = await threadController.reportThread(board, threadId);
+                if (!thread) {
+                    return res.status(404).json({ error: `Thread ${threadId} not found on board ${board}` });
+                }
+                return res.status(200).send('reported');
             } catch (error) {
                 console.error(error);
                 return res.status(500).json({ error: error.message });
@@ -101,18 +104,26 @@ module.exports = function(app) {
                     return res.status(500).json({ error: error.message });
                 }
             })
-        .put(validateId({ in: 'body', fieldName: 'reply_id' }), async (req, res) => {
-            const board = req.params.board;
-            const { reply_id: replyId } = req.query;
+        .put([
+            validateId({ in: 'body', fieldName: 'reply_id' }),
+            validateId({ in: 'body', fieldName: 'thread_id' })
+        ],
+            async (req, res) => {
+                const board = req.params.board;
+                const { thread_id: threadId, reply_id: replyId } = req.body;
 
-            try {
-                const reported = await replyController.reportReply(board, replyId);
-                return res.status(200).send(reported);
-            } catch (error) {
-                console.error(error);
-                return res.status(500).json({ error: error.message });
-            }
-        })
+                try {
+                    const thread = await replyController
+                        .reportReply(board, threadId, replyId);
+                    if (!thread || thread.replies.length === 0) {
+                        return res.status(404).json({ error: `Reply ${replyId} not found in thread ${threadId} on board ${board}` })
+                    }
+                    return res.status(200).send('reported');
+                } catch (error) {
+                    console.error(error);
+                    return res.status(500).json({ error: error.message });
+                }
+            })
         .delete(
             [
                 validateId({ in: 'body', fieldName: 'thread_id' }),
@@ -128,7 +139,7 @@ module.exports = function(app) {
 
                 try {
                     const result = await replyController
-                        .deleteReply(board, deletePassword, threadId, replyId);
+                        .softDeleteReply(board, deletePassword, threadId, replyId);
                     return res.status(200).send(result);
                 } catch (error) {
                     console.error(error);

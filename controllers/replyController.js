@@ -62,16 +62,23 @@ async function getThreadWithReplies(board, threadId) {
     return threadWithReplies[0];
 }
 
-async function reportReply(board, replyId) {
-    return null;
+async function reportReply(board, threadId, replyId) {
+    const thread = await Thread.findOneAndUpdate({
+        _id: threadId,
+        boardName: board,
+        'replies._id': replyId
+    },
+        { $set: { 'replies.$.reported': true } },
+        { new: true });
+    return thread;
 }
 
-async function deleteReply(board, deletePassword, threadId, replyId) {
+async function softDeleteReply(board, deletePassword, threadId, replyId) {
     const thread = await Thread.findOne({
         _id: threadId,
         boardName: board,
         'replies._id': replyId
-    }, { 'replies.$': 1 });
+    }, { 'replies.$': 1 }).lean();
     if (!thread) {
         throw new Error(`Reply could not be deleted. Thread or reply not found for given board and ids`);
     }
@@ -92,4 +99,4 @@ async function deleteReply(board, deletePassword, threadId, replyId) {
 exports.createReply = createReply;
 exports.getThreadWithReplies = getThreadWithReplies;
 exports.reportReply = reportReply;
-exports.deleteReply = deleteReply;
+exports.softDeleteReply = softDeleteReply;

@@ -52,7 +52,12 @@ async function getRecentThreads(board) {
 }
 
 async function reportThread(board, threadId) {
-    return null;
+    const thread = await Thread.findOneAndUpdate(
+        { _id: threadId, boardName: board },
+        { $set: { reported: true } },
+        { new: true }
+    );
+    return thread;
 }
 
 async function deleteThread(board, deletePassword, threadId) {

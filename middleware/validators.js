@@ -5,12 +5,12 @@ function validatePassword(req, res, next) {
     if (!deletePassword) {
         return res.status(400).json({ error: 'Thread needs to have a delete password' });
     }
-    if (deletePassword.length < 8) {
-        return res.status(400).json({ error: 'Password must have at least 8 chars' });
-    }
-    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^\w\s]).*$/.test(deletePassword)) {
-        return res.status(400).json({ error: 'Password must contain at least one letter, number and special character' });
-    }
+    // if (deletePassword.length < 8) {
+    //     return res.status(400).json({ error: 'Password must have at least 8 chars' });
+    // }
+    // if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^\w\s]).*$/.test(deletePassword)) {
+    //     return res.status(400).json({ error: 'Password must contain at least one letter, number and special character' });
+    // }
     next();
 }
 
